@@ -18,9 +18,45 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 
+
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+from drf_yasg.generators import OpenAPISchemaGenerator
+
+
+
+class JWTGenerator(OpenAPISchemaGenerator):
+    def get_security_definitions(self, request=None):
+        return {
+            "Bearer": {
+                "type": "apiKey",
+                "name": "Authorization",
+                "in": "header"
+            }
+        }
+schema_view = get_schema_view(
+   openapi.Info(
+      title="Vending Machine API",
+      default_version='v1',
+      description="API documentation for vending machine project",
+      contact=openapi.Contact(email="lawalhussein775@example.com"),
+      license=openapi.License(name="MIT License"),
+   ),
+   public=True,
+   permission_classes=[permissions.AllowAny],
+   authentication_classes=[],  # Optional: leave empty for Swagger itself
+    generator_class=JWTGenerator,
+)
+
+# Add Bearer token globally
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',include('app.urls'))
+    path('',include('app.urls')),
+    path('swagger(<format>\.json|\.yaml)', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
 ]
 

@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
        #App name 
     "app",
+    #External
+     'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -148,11 +150,7 @@ SIMPLE_JWT = {
 
 AUTH_USER_MODEL = 'app.User'
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
-}
+#For testing
+SWAGGER_USE_COMPAT_RENDERERS = False
+
+

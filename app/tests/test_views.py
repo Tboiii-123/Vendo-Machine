@@ -52,6 +52,15 @@ def test_login_view_success(user_factory):
     assert "access" in response.data
     assert "refresh" in response.data
 
+  
+@pytest.mark.django_db
+def test_login_invalid_credentials(db, django_user_model):
+    client = APIClient()
+    response = client.post(reverse('login_view'), {'email': 'wrong@test.com', 'password': 'wrongpass'})
+    assert response.status_code == 401
+    assert response.data['message'] == "Invalid credentials"
+      
+
 
 @pytest.mark.django_db
 def test_login_invalid_credentials():
@@ -92,6 +101,23 @@ def test_deposit_success(authenticated_buyer):
     assert response.data["deposit"] == buyer.deposit
 
 
+@pytest.mark.django_db
+def test_deposit_invalid_coin(authenticated_buyer):
+    client, buyer = authenticated_buyer
+    response = client.post(reverse('deposit'), {'coin': 3})  # invalid coin
+    assert response.status_code == 400
+
+
+@pytest.mark.django_db
+def test_deposit_non_integer_coin(authenticated_buyer):
+    client, buyer = authenticated_buyer
+    response = client.post(reverse('deposit'), {'coin': 'abc'})
+    assert response.status_code == 400
+    assert 'Invalid coin format' in response.data['detail']
+
+
+
+
 #Test product creation
 @pytest.mark.django_db
 def test_product_create_by_seller(authenticated_seller):
@@ -103,16 +129,19 @@ def test_product_create_by_seller(authenticated_seller):
 
 
 
+
+
 @pytest.mark.django_db
-def test_product_create_by_buyer_denied(authenticated_buyer):
-    client, _ = authenticated_buyer
-    data = {"product_name": "Pepsi", "cost": 15, "amount_available": 5}
-    response = client.post(reverse("product_create"), data)
+def test_product_create_permission_denied(authenticated_buyer):
+    client, buyer = authenticated_buyer
+    response = client.post(reverse('product_create'), {'product_name': 'Test', 'amount_available': 10, 'cost': 50})
     assert response.status_code == 403
+    assert 'User Permission denied' in response.data['message']
 
 
 
 
+#Product
 @pytest.mark.django_db
 def test_product_view_get(product_factory, authenticated_buyer):
     client, _ = authenticated_buyer  # use APIClient with auth
@@ -141,6 +170,26 @@ def test_buy_view_success(authenticated_buyer, product_factory):
     assert response.data["product"]["total_cost"] == 20
     assert response.data["total_spent"] == 20
 
+@pytest.mark.django_db
+def test_buy_insufficient_deposit(authenticated_buyer, product_factory):
+    client, buyer = authenticated_buyer
+    product = product_factory(amount_available=5, cost=50)
+    buyer.deposit = 10
+    buyer.save()
+    response = client.post(reverse('buy_view'), {'product_id': product.id, 'amount': 1})
+    assert response.status_code == 400
+    assert 'Insufficient deposit' in response.data['detail']
+
+
+@pytest.mark.django_db
+def test_deposit_denied_for_seller(authenticated_seller):
+    client, seller = authenticated_seller
+
+    # Try to deposit as a seller
+    response = client.post(reverse("deposit"), {"coin": 5})
+
+    assert response.status_code == 403
+    assert response.data["detail"] == "Only buyers can deposit."
 
 
 
@@ -148,6 +197,7 @@ def test_buy_view_success(authenticated_buyer, product_factory):
 
 
 
+#Deposit
 
 @pytest.mark.django_db
 def test_reset_deposit_buyer(authenticated_buyer):
@@ -178,6 +228,9 @@ def test_reset_deposit_non_buyer(authenticated_seller):
     # Should be forbidden
     assert response.status_code == status.HTTP_403_FORBIDDEN
     assert response.data["detail"] == "Only buyers can reset deposit"
+    
+
+
 
 
 
@@ -197,8 +250,11 @@ def test_logout_all_view(authenticated_buyer, user_session_factory):
 
     # Assert response
     assert response.status_code == 200
-    assert response.data["message"] == "All active sessions terminated"
+    assert response.data["message"] == "Session Terminated"
 
     # Assert sessions deleted
     assert UserSession.objects.filter(user=buyer).count() == 0
+
+
+
 

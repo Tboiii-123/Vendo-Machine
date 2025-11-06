@@ -5,17 +5,26 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from .models import  Product,UserSession
-from .serializers import UserCreateSerializer, ProductSerializer
+from .serializers import UserCreateSerializer, ProductSerializer,UserInfoSerializer
 
 from .utils import COINS, calc_change
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 
 
 
+
+
+@swagger_auto_schema(
 
     
+    method='post',
+    request_body=UserCreateSerializer,
+    responses={201: UserCreateSerializer, 400: "Validation Error"}
+)
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register_view(request):
@@ -34,7 +43,28 @@ def register_view(request):
 
     
 
+login_request_schema = openapi.Schema(
+    type=openapi.TYPE_OBJECT,
+    required=['email', 'password'],
+    properties={
+        'email': openapi.Schema(type=openapi.TYPE_STRING, description='User email'),
+        'password': openapi.Schema(type=openapi.TYPE_STRING, description='User password')
+    }
+)
 
+login_response_schema = openapi.Schema(
+    type=openapi.TYPE_OBJECT,
+    properties={
+        'access': openapi.Schema(type=openapi.TYPE_STRING, description='Access token'),
+        'refresh': openapi.Schema(type=openapi.TYPE_STRING, description='Refresh token')
+    }
+)
+
+@swagger_auto_schema(
+    method='post',
+    request_body=login_request_schema,
+    responses={200: login_response_schema, 401: "Invalid credentials", 403: "Active session exists"}
+)
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login_view(request):
@@ -67,6 +97,10 @@ def login_view(request):
     })
 
 
+@swagger_auto_schema(
+    method='get',
+    responses={200: UserInfoSerializer}
+)
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def user_view(request):
@@ -83,7 +117,20 @@ def user_view(request):
 
 
 
+deposit_request_schema = openapi.Schema(
+    type=openapi.TYPE_OBJECT,
+    required=['coin'],
+    properties={'coin': openapi.Schema(type=openapi.TYPE_INTEGER, description=f"Coin must be one of {COINS}")}
+)
 
+@swagger_auto_schema(
+    method='post',
+    request_body=deposit_request_schema,
+    responses={200: openapi.Response("Deposit successful", openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={'deposit': openapi.Schema(type=openapi.TYPE_INTEGER)}
+    )), 403: "Only buyers can deposit", 400: "Invalid coin"}
+)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def deposit(request):
@@ -115,7 +162,11 @@ def deposit(request):
 
 
 
-
+@swagger_auto_schema(
+    method='post',
+    request_body=ProductSerializer,
+    responses={201: ProductSerializer, 403: "Permission Denied", 400: "Validation Error"}
+)
 #Product View
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -126,12 +177,10 @@ def product_create(request):
     if user.role =='seller':
             
 
-        data = request.data.copy()   
-        data['seller'] = user.id     
 
-        serializer = ProductSerializer(data=data)
+        serializer = ProductSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(seller=user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         
         else:
@@ -141,6 +190,10 @@ def product_create(request):
     }, status=status.HTTP_403_FORBIDDEN)
 
 
+@swagger_auto_schema(
+    method='get',
+    responses={200: ProductSerializer(many=True)}
+)
 @api_view(['GET'])
 def product_view(request):
 
@@ -153,7 +206,20 @@ def product_view(request):
 
 
 
-
+@swagger_auto_schema(
+    method='put',
+    request_body=ProductSerializer,
+    responses={200: ProductSerializer, 403: "Permission Denied", 400: "Validation Error"}
+)
+@swagger_auto_schema(
+    method='patch',
+    request_body=ProductSerializer,
+    responses={200: ProductSerializer, 403: "Permission Denied", 400: "Validation Error"}
+)
+@swagger_auto_schema(
+    method='delete',
+    responses={200: "Deleted successfully", 403: "Permission Denied"}
+)
 #Update,Delete product
 @api_view(['PUT', 'PATCH', 'DELETE'])
 @permission_classes([IsAuthenticated])
@@ -203,7 +269,20 @@ def product_update(request,pk):
 
 
 
+buy_request_schema = openapi.Schema(
+    type=openapi.TYPE_OBJECT,
+    required=['product_id', 'amount'],
+    properties={
+        'product_id': openapi.Schema(type=openapi.TYPE_INTEGER),
+        'amount': openapi.Schema(type=openapi.TYPE_INTEGER)
+    }
+)
 
+@swagger_auto_schema(
+    method='post',
+    request_body=buy_request_schema,
+    responses={200: "Purchase successful", 400: "Invalid data", 403: "Only buyers can buy"}
+)
 #Buy Enndpoint
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -274,8 +353,10 @@ def buy_view(request):
        
 
 
-
-
+@swagger_auto_schema(
+    method='post',
+    responses={200: "Deposit reset successfully", 403: "Only buyers can reset deposit"}
+)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def reset_deposit(request):
@@ -296,13 +377,10 @@ def reset_deposit(request):
 
 
 
-
-
-
-    
-
-
-
+@swagger_auto_schema(
+    method='post',
+    responses={200: "Session terminated successfully"}
+)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def logout_all_view(request):

@@ -19,13 +19,18 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
 
 
+class UserInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'user_name', 'email', 'role', 'deposit']
+
 
 
 class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('id','product_name','amount_available','cost','seller')
+        fields = ('id','product_name','amount_available','cost')
 
     def validate_cost(self, value):
         if value % 5 != 0:
