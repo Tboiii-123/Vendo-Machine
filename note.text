@@ -1,0 +1,30 @@
+
+{
+  "email": "buyer1@example.com",
+  "user_name": "buyer1",
+  "password": "StrongPass123",
+  "role": "buyer"
+}
+
+
+
+
+
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYyNDM4NzE3LCJpYXQiOjE3NjI0MzUxMTcsImp0aSI6ImRhY2VlMWI4YmViZTQ2NmJiN2M4ZjE5NjgwOTE5MDU3IiwidXNlcl9pZCI6IjEifQ.9yata_Kt_ZQmVk4NNbkgkNah-Gl0sckOIC9-BrG1VcE
+
+
+
+
+
+
+{
+  "email": "seller1@example.com",
+  "user_name": "seller1",
+  "password": "StrongPass123",
+  "role": "seller"
+}
+
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYyNDI2NTQxLCJpYXQiOjE3NjI0MjI5NDEsImp0aSI6IjA0YmFlMjEzNzk1NjQ2OGE4NWI3OWM5NTk4MTk4MjBlIiwidXNlcl9pZCI6IjIifQ.U9YYsVYm28zdgy8Sr5sJ59jH_wGJNEum4AMOOE_AnLA
+
