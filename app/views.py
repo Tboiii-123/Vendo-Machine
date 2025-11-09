@@ -162,6 +162,7 @@ def deposit(request):
 
 
 
+
 @swagger_auto_schema(
     method='post',
     request_body=ProductSerializer,
@@ -190,7 +191,10 @@ def product_create(request):
     }, status=status.HTTP_403_FORBIDDEN)
 
 
+
+
 @swagger_auto_schema(
+        
     method='get',
     responses={200: ProductSerializer(many=True)}
 )
@@ -224,10 +228,7 @@ def product_view(request):
 @api_view(['PUT', 'PATCH', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def product_update(request,pk):
-
-    
         
-    
     user =request.user
 
     if user.role =='seller':
@@ -254,13 +255,12 @@ def product_update(request,pk):
 
 
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
+    
     return Response({
-        "message":"User Permission denied"
+        "error":"User Permission denied"
     
     }, status=status.HTTP_403_FORBIDDEN)
+
 
     
 
@@ -296,7 +296,7 @@ def buy_view(request):
 
 
         product_id =request.data.get('product_id')
-        amount =int(request.data.get('amount',1))
+        amount =request.data.get('amount',1)
 
         try:
             amount = int(amount)

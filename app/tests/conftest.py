@@ -6,7 +6,8 @@ import uuid
 
 from app.models import UserSession
 
-
+#It tells pyetes
+#“This function is a fixture — a reusable piece of setup code that tests can use.”
 @pytest.fixture
 def user_factory(db, django_user_model):
     def create_user(**kwargs):
@@ -53,9 +54,9 @@ def product_factory(user_factory):
     return create_product
 
 
-
 @pytest.fixture
 def user_session_factory(user_factory):
+    """Factory to create user sessions for testing"""
     def create_session(user=None, **kwargs):
         if user is None:
             user = user_factory(

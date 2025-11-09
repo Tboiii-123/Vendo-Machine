@@ -28,3 +28,33 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY
 
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYyNDI2NTQxLCJpYXQiOjE3NjI0MjI5NDEsImp0aSI6IjA0YmFlMjEzNzk1NjQ2OGE4NWI3OWM5NTk4MTk4MjBlIiwidXNlcl9pZCI6IjIifQ.U9YYsVYm28zdgy8Sr5sJ59jH_wGJNEum4AMOOE_AnLA
 
+
+
+
+to start testing
+
+pytsest -v
+
+For cpverage
+pytest --cov
+
+To check missing part in the coverage
+pytest --cov=. --cov-report=term-missing
+
+
+
+
+
+
+
+
+@pytest.mark.django_db
+def test_login_invalid_credentials(db, django_user_model):
+    client = APIClient()
+    response = client.post(reverse('login_view'), {'email': 'wrong@test.com', 'password': 'wrongpass'})
+    assert response.status_code == 401
+    assert response.data['message'] == "Invalid credentials"
+      
+
+      but i ddit use  djnago_user_model and db why called
+      
