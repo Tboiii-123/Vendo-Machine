@@ -1,7 +1,7 @@
-text.txt
 note.txt
 GigGap Coding Challenge.pdf
 db.sqlite3
 .pytest_cache
 .coverage
 study.txt
+.gitignore

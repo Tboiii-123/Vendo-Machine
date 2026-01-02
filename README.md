@@ -22,8 +22,8 @@ A RESTful API built with **Django REST Framework** for a vending system. It supp
 1. **Clone the repository**
 
 ```bash
-git clone <your-repo-url>
-cd <repo-folder>
+git https://github.com/Tboiii-123/Vendor-Machine.git
+cd Vendor-Machine
 ```
 
 2. **Create and activate a virtual environment**

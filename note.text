@@ -11,7 +11,9 @@
 
 
 
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYyNDQwNzk1LCJpYXQiOjE3NjI0MzcxOTUsImp0aSI6IjFjZTc1NzgzNjNiOTQyNWZiOWI1ZDU0MjZiYjRlYTA2IiwidXNlcl9pZCI6IjEifQ.NRAIYzAFO0unejYibQz5208MwoPk2YuzbiSw5lVpvsE
+
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYzMDQyMjEwLCJpYXQiOjE3NjMwMzg2MTEsImp0aSI6ImVhMTA2ZGVmMzRlNTRkNjZhYmZkNzhiZTI1MDU2OGEzIiwidXNlcl9pZCI6IjEifQ.r7W3XepdLKzPLzpz8JM2LugMz479sRApc9KmSVjM4WU
 
 
 
@@ -26,7 +28,45 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY
 }
 
 
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYyNDI2NTQxLCJpYXQiOjE3NjI0MjI5NDEsImp0aSI6IjA0YmFlMjEzNzk1NjQ2OGE4NWI3OWM5NTk4MTk4MjBlIiwidXNlcl9pZCI6IjIifQ.U9YYsVYm28zdgy8Sr5sJ59jH_wGJNEum4AMOOE_AnLA
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYzMDQyNzExLCJpYXQiOjE3NjMwMzkxMTEsImp0aSI6IjY4MTg0MzNjYzhhNDQ0MzliYmVkZjUzNmNjZmY1MzAwIiwidXNlcl9pZCI6IjIifQ.kjggNWMHLEu10iPPhWVplEPFcHKRWmD26ivHuqQrgoU
+
+
+
+deposit User
+COINS = [100, 50, 20, 10, 5]
+
+
+{
+
+"coin":100
+
+}
+
+
+Product_create
+{
+  "product_name":"Milk",
+  "amount_available":10,
+  "cost":17
+
+}
+
+
+Buy product
+{
+  "product_id":1,
+  "amount"2
+}
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -40,6 +80,7 @@ pytest --cov
 
 To check missing part in the coverage
 pytest --cov=. --cov-report=term-missing
+
 
 
 

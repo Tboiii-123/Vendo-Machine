@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     "app",
     #External
      'drf_yasg',
+       "rest_framework",
+     'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -142,7 +144,7 @@ REST_FRAMEWORK = {
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),   # token lasts 1 hour
+   'ACCESS_TOKEN_LIFETIME': timedelta(minutes=20), 
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),  # refresh token lasts 7 days
 }
 
@@ -154,3 +156,6 @@ AUTH_USER_MODEL = 'app.User'
 SWAGGER_USE_COMPAT_RENDERERS = False
 
 
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': False,
+}

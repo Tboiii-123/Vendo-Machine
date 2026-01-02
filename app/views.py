@@ -22,6 +22,7 @@ from drf_yasg import openapi
 
     
     method='post',
+    tags=['Auth'],
     request_body=UserCreateSerializer,
     responses={201: UserCreateSerializer, 400: "Validation Error"}
 )
@@ -62,6 +63,7 @@ login_response_schema = openapi.Schema(
 
 @swagger_auto_schema(
     method='post',
+    tags=['Auth'],
     request_body=login_request_schema,
     responses={200: login_response_schema, 401: "Invalid credentials", 403: "Active session exists"}
 )
@@ -165,6 +167,7 @@ def deposit(request):
 
 @swagger_auto_schema(
     method='post',
+     tags=['Product Details'],
     request_body=ProductSerializer,
     responses={201: ProductSerializer, 403: "Permission Denied", 400: "Validation Error"}
 )
@@ -176,6 +179,8 @@ def product_create(request):
     user =request.user
 
     if user.role =='seller':
+
+        
             
 
 
@@ -196,9 +201,11 @@ def product_create(request):
 @swagger_auto_schema(
         
     method='get',
+    tags=['Product Details'],
     responses={200: ProductSerializer(many=True)}
 )
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def product_view(request):
 
     products = Product.objects.all()
@@ -213,15 +220,18 @@ def product_view(request):
 @swagger_auto_schema(
     method='put',
     request_body=ProductSerializer,
+    tags=['Product Details'],
     responses={200: ProductSerializer, 403: "Permission Denied", 400: "Validation Error"}
 )
 @swagger_auto_schema(
     method='patch',
+    tags=['Product Details'],
     request_body=ProductSerializer,
     responses={200: ProductSerializer, 403: "Permission Denied", 400: "Validation Error"}
 )
 @swagger_auto_schema(
     method='delete',
+    tags=['Product Details'],
     responses={200: "Deleted successfully", 403: "Permission Denied"}
 )
 #Update,Delete product
@@ -286,7 +296,6 @@ buy_request_schema = openapi.Schema(
 #Buy Enndpoint
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-
 def buy_view(request):
 
     user =request.user
@@ -379,6 +388,7 @@ def reset_deposit(request):
 
 @swagger_auto_schema(
     method='post',
+    tags=['Auth'],
     responses={200: "Session terminated successfully"}
 )
 @api_view(['POST'])
